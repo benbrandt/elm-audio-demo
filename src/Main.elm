@@ -1,19 +1,27 @@
-module Main exposing (..)
+port module Main exposing (..)
 
-import Html exposing (Html, text, div)
+import Html exposing (..)
 import Html.App exposing (program)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 
 
 -- MODEL
 
 
 type alias Model =
-    ()
+    { audio : String
+    , playing : Bool
+    }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( (), Cmd.none )
+    ( { audio = "http://www.gutenberg.org/files/20598/mp3/20598-22.mp3"
+      , playing = False
+      }
+    , Cmd.none
+    )
 
 
 
@@ -21,12 +29,24 @@ init =
 
 
 type Msg
-    = NoOp
+    = Play
+    | Pause
 
 
-update : Msg -> Model -> ( Model, Cmd msg )
+port play : () -> Cmd msg
+
+
+port pause : () -> Cmd msg
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        Play ->
+            ( { model | playing = True }, play () )
+
+        Pause ->
+            ( { model | playing = False }, pause () )
 
 
 
@@ -44,7 +64,33 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [] [ text "Your Elm App is working!" ]
+    div []
+        [ audio
+            [ id "audiofile"
+            , src model.audio
+            , controls True
+            ]
+            []
+        , viewPlayButton model.playing
+        ]
+
+
+viewPlayButton : Bool -> Html Msg
+viewPlayButton playing =
+    if playing then
+        button
+            [ class "pause"
+            , name "pause"
+            , onClick Pause
+            ]
+            [ text "Pause" ]
+    else
+        button
+            [ class "play"
+            , name "play"
+            , onClick Play
+            ]
+            [ text "Play" ]
 
 
 
