@@ -108,12 +108,11 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div [ style [ ( "padding", "40px 0" ), ( "text-align", "center" ) ] ]
+    div [ class "audio" ]
         [ audio
             [ id "audiofile"
             , src model.audio
             , controls True
-            , style [ ( "width", "100%" ) ]
             ]
             []
         , viewPlayButton model.playing
@@ -123,34 +122,20 @@ view model =
 
 viewPlayButton : Bool -> Html Msg
 viewPlayButton playing =
-    let
-        styles =
-            [ ( "margin", "20px auto" )
-            , ( "padding", "0.5em 1em" )
-            , ( "background", "#00d1b2" )
-            , ( "color", "#fff" )
-            , ( "border", "0" )
-            , ( "border-radius", "5px" )
-            , ( "display", "block" )
-            , ( "font-size", "20px" )
+    if playing then
+        button
+            [ class "pause"
+            , name "pause"
+            , onClick Pause
             ]
-    in
-        if playing then
-            button
-                [ class "pause"
-                , name "pause"
-                , onClick Pause
-                , style styles
-                ]
-                [ text "Pause" ]
-        else
-            button
-                [ class "play"
-                , name "play"
-                , onClick Play
-                , style styles
-                ]
-                [ text "Play" ]
+            [ text "Pause" ]
+    else
+        button
+            [ class "play"
+            , name "play"
+            , onClick Play
+            ]
+            [ text "Play" ]
 
 
 viewSegments : Float -> List AudioSegment -> Html Msg
