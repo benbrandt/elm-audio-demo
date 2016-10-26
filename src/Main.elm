@@ -17,7 +17,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { audio = "http://www.gutenberg.org/files/20598/mp3/20598-22.mp3"
+    ( { audio = "static/media/buccaneers.mp3"
       , playing = False
       }
     , Cmd.none
