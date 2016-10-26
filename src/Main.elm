@@ -64,7 +64,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [ class "audio" ]
         [ audio
             [ id "audiofile"
             , src model.audio
