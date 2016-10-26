@@ -51,7 +51,7 @@ init =
 type Msg
     = Play
     | Pause
-    | Speak (List String)
+    | Speak AudioMarker
 
 
 port play : () -> Cmd msg
@@ -69,8 +69,20 @@ update msg model =
         Pause ->
             ( { model | playing = False }, pause () )
 
-        Speak list ->
-            ( model, Cmd.none )
+        Speak speakEvent ->
+            let
+                segment =
+                    newSegment speakEvent model.segments
+
+                newDuration =
+                    speakEvent.timestamp
+            in
+                ( { model
+                    | segments = segment :: model.segments
+                    , duration = newDuration
+                  }
+                , Cmd.none
+                )
 
 
 newSegment : AudioMarker -> List AudioSegment -> AudioSegment
@@ -94,7 +106,7 @@ newSegment marker segments =
 -- SUBSCRIPTIONS
 
 
-port speaking : (List String -> msg) -> Sub msg
+port speaking : (AudioMarker -> msg) -> Sub msg
 
 
 subscriptions : Model -> Sub Msg
