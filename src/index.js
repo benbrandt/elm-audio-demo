@@ -1,4 +1,5 @@
 require('./main.css');
+require('./buccaneers.mp3');
 
 var Elm = require('./Main.elm');
 
