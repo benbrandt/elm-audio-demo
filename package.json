@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@horizon/client": "^2.0.0",
     "hark": "^1.1.3"
   },
   "devDependencies": {

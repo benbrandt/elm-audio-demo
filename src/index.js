@@ -2,12 +2,34 @@ require('./main.css');
 require('./buccaneers.mp3');
 
 var hark = require('hark');
-
+var Horizon = require('@horizon/client');
 var Elm = require('./Main.elm');
 
 var root = document.getElementById('root');
 
 var app = Elm.Main.embed(root);
+
+// Horizon
+var horizon = Horizon({ host: 'localhost:8181' });
+horizon.onReady(function() {
+  console.log('elm_audio_db works!');
+});
+horizon.connect();
+
+// Setup AudioSegment Collection
+var audioSegments = horizon('segments');
+
+// Log DB changes
+audioSegments.watch().subscribe(
+  function success(items) {
+    items.forEach(function (item) {
+      console.log(item);
+    })
+  },
+  function error(err) {
+    console.log(err);
+  }
+);
 
 // Setup Hark listeners
 app.ports.setup.subscribe(function setup() {
@@ -41,5 +63,10 @@ app.ports.play.subscribe(function play() {
 app.ports.pause.subscribe(function pause() {
   var audio = document.getElementById('audiofile');
   audio.pause();
+});
+
+// Save Audio Segments to Database
+app.ports.save.subscribe(function save(segments) {
+  audioSegments.store({ segments: segments });
 });
 

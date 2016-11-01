@@ -52,12 +52,16 @@ type Msg
     = Play
     | Pause
     | Speak AudioMarker
+    | Save
 
 
 port play : () -> Cmd msg
 
 
 port pause : () -> Cmd msg
+
+
+port save : List AudioSegment -> Cmd msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -83,6 +87,9 @@ update msg model =
                   }
                 , Cmd.none
                 )
+
+        Save ->
+            ( model, save model.segments )
 
 
 newSegment : AudioMarker -> List AudioSegment -> AudioSegment
@@ -128,6 +135,7 @@ view model =
             ]
             []
         , viewPlayButton model.playing
+        , button [ onClick Save ] [ text "Save" ]
         , viewSegments model.duration model.segments
         ]
 
